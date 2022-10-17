@@ -13,7 +13,7 @@ export default function App() {
       <Image style={styles.logo} source={require('./assets/pokeapi_256.png')} />
       <View style={styles.buscadorView}>
         <TextInput 
-          placeholder='Buscar pokemon'
+          placeholder='Buscar Pokemon'
           style={styles.buscador}
           onChangeText={busqueda => setBusqueda(busqueda.toLowerCase())}
         />
