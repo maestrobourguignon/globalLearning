@@ -7,8 +7,7 @@ import pokemonList from './components/pokemonList';
 
 export default function App() {
   const [busqueda, setBusqueda] = useState('')
-  // const handleInput = e => {setBusqueda(e.target.value)} 
-  // console.log(busqueda)
+  
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={require('./assets/pokeapi_256.png')} />
