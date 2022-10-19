@@ -1,26 +1,87 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
-import { FlatList, Image, StyleSheet, Text, TextInput, View } from 'react-native';
+import { 
+  FlatList,
+  Image, 
+  StyleSheet, 
+  Text, 
+  TextInput, 
+  View, 
+  ActivityIndicator, 
+  Button, 
+  Switch,
+  RefreshControl,
+  Animated
+} from 'react-native';
 import Pokemon from './components/pokemon';
 import pokemonList from './components/pokemonList';
 
 
+
 export default function App() {
+  const [input, setInput] =useState(true)
+  const toggleSwitch = () => 
+  setInput(!input)
   const [busqueda, setBusqueda] = useState('')
+  const [confirmacion, setConfirmacion] = useState('')
+  const [oculto, setOculto] = useState(false)
+  const asyncSearch = () => {
+    setOculto(true)
+    setTimeout(() => {
+      setOculto(false)
+      setConfirmacion(busqueda.toLowerCase())
+    }, 2000);
+  }
+  const animacion = () => {
+    height = Animated.Value(80)
+  }
+
   
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={require('./assets/pokeapi_256.png')} />
+      <View style={styles.containerSwitch}>
+        <Text>Desactivar Busqueda</Text>
+        <Switch 
+          onValueChange={toggleSwitch}
+          value={!input}
+        />
+      </View>      
       <View style={styles.buscadorView}>
         <TextInput 
           placeholder='Buscar Pokemon'
           style={styles.buscador}
-          onChangeText={busqueda => setBusqueda(busqueda.toLowerCase())}
+          onChangeText={busqueda => setBusqueda(busqueda)}
+          editable={input}
+          backgroundColor={input ? '#fff' : 'gray' }
         />
+        <View style={styles.btnView}>
+          {!oculto ? 
+          <Button 
+          title='Buscar'
+          onPress={asyncSearch}
+          disabled = {!input}
+          />
+          :
+          <ActivityIndicator 
+          size={'large'}
+          color='blue'
+          />
+          }
+        </View>
       </View>
       <FlatList 
+      refreshControl={
+        input ?
+        <RefreshControl
+          refreshing={oculto}
+          onRefresh={asyncSearch}
+        />
+        :
+        null
+      }
       style={styles.list}
-      data={pokemonList.filter(item => item.name.includes(busqueda))}
+      data={pokemonList.filter(item => item.name.includes(confirmacion))}
       keyExtractor={x => String(x.name)}
         renderItem={({item}) => <Pokemon 
           imagen={item.url}
@@ -29,7 +90,7 @@ export default function App() {
         ListEmptyComponent={
           <View style={styles.listaVacia}>
             <Text style={styles.listaVaciaTxt}>No se encontró el Pokémon con el nombre:</Text>
-            <Text style={styles.listaVaciaTxtNegrita}>{busqueda}</Text>
+            <Text style={styles.listaVaciaTxtNegrita}>{confirmacion}</Text>
           </View>
         }
       />
@@ -52,9 +113,9 @@ const styles = StyleSheet.create({
     borderBottomWidth:1,
     borderBottomColor: 'black',
   },
-  // logo: {
-  //   padding:40,
-  // }
+  btnView: {
+    marginHorizontal: 5,
+  },
   buscador: {
     borderColor: 'black',
     borderRadius: 50,
@@ -65,10 +126,11 @@ const styles = StyleSheet.create({
   },
   buscadorView:{
     width:'100%',
-    marginTop:30,
+    marginTop:10,
     marginBottom:10,
     justifyContent:'center',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   listaVacia:{
     justifyContent: 'center',
@@ -80,5 +142,11 @@ const styles = StyleSheet.create({
   listaVaciaTxtNegrita:{
     fontSize:25,
     fontWeight:'bold',
+  },
+  containerSwitch:{
+    margin: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   }
+
 });
