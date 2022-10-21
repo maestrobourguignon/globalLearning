@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
 import { 
   FlatList,
@@ -8,13 +7,14 @@ import {
   TextInput, 
   View, 
   ActivityIndicator, 
-  Button, 
+  Button,
+  StatusBar, 
   Switch,
   RefreshControl,
-  Animated
 } from 'react-native';
 import Pokemon from './components/pokemon';
 import pokemonList from './components/pokemonList';
+import Modal from './components/modal';
 
 
 
@@ -25,21 +25,32 @@ export default function App() {
   const [busqueda, setBusqueda] = useState('')
   const [confirmacion, setConfirmacion] = useState('')
   const [oculto, setOculto] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [imgURL, setImgURL] = useState('')
+  
   const asyncSearch = () => {
-    setOculto(true)
+    setOculto()
     setTimeout(() => {
       setOculto(false)
       setConfirmacion(busqueda.toLowerCase())
     }, 2000);
   }
-  const animacion = () => {
-    height = Animated.Value(80)
+
+  const handleOpen = () => {
+    setImgURL()
+    setModalVisible(true)
+    console.log(imgURL)
+    
   }
 
-  
+  const handleClose = () => {
+    setModalVisible(false)
+  }
+
+
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} source={require('./assets/pokeapi_256.png')} />
+      <Image source={require('./assets/pokeapi_256.png')} />
       <View style={styles.containerSwitch}>
         <Text>Desactivar Busqueda</Text>
         <Switch 
@@ -47,6 +58,32 @@ export default function App() {
           value={!input}
         />
       </View>      
+      
+      <FlatList 
+      refreshControl={
+        input ?
+        <RefreshControl
+          refreshing={oculto}
+          onRefresh={asyncSearch}
+        />
+        :
+        null
+      }
+      style={styles.list}
+      data={pokemonList.filter(item => item.name.includes(confirmacion))}
+      keyExtractor={x => String(x.name)}
+        renderItem={({item}) => <Pokemon 
+          imagen={item.url}
+          title={item.name}
+          open={handleOpen}
+        />}
+        ListEmptyComponent={
+          <View style={styles.listaVacia}>
+            <Text style={styles.listaVaciaTxt}>No se encontró el Pokémon con el nombre:</Text>
+            <Text style={styles.listaVaciaTxtNegrita}>{confirmacion}</Text>
+          </View>
+        }
+      />
       <View style={styles.buscadorView}>
         <TextInput 
           placeholder='Buscar Pokemon'
@@ -69,36 +106,23 @@ export default function App() {
           />
           }
         </View>
+        
       </View>
-      <FlatList 
-      refreshControl={
-        input ?
-        <RefreshControl
-          refreshing={oculto}
-          onRefresh={asyncSearch}
-        />
-        :
-        null
-      }
-      style={styles.list}
-      data={pokemonList.filter(item => item.name.includes(confirmacion))}
-      keyExtractor={x => String(x.name)}
-        renderItem={({item}) => <Pokemon 
-          imagen={item.url}
-          title={item.name}
-        />}
-        ListEmptyComponent={
-          <View style={styles.listaVacia}>
-            <Text style={styles.listaVaciaTxt}>No se encontró el Pokémon con el nombre:</Text>
-            <Text style={styles.listaVaciaTxtNegrita}>{confirmacion}</Text>
-          </View>
-        }
+      <Modal
+        visible = {modalVisible}
+        close = {handleClose}
+        url = {pokemonList.filter(item => item.name.includes(item)).map(x => x.url)}
+        ></Modal>
+      <StatusBar
+      backgroundColor="#c90a1d"
+      barStyle={'light-content'}
+
       />
-      
-      <StatusBar style="auto" />
     </View>
   );
 }
+// console.log(pokemonList.map(x => x.url))
+// console.log(pokemonList.filter(item => item.name.includes('spearow')).map(x => x.url))
 
 const styles = StyleSheet.create({
   container: {
