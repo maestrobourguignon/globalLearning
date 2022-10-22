@@ -36,8 +36,10 @@ export default function App() {
     }, 2000);
   }
 
-  const handleOpen = () => {
-    setImgURL()
+  // a handleOpen le pasamos la prop de imagen que contiene el url que le dimos con la misma prop 
+  // en el componente pokemon, y luego seteamos la const imgURL con el valor de la prop
+  const handleOpen = (imagen) => {
+    setImgURL(imagen)
     setModalVisible(true)
     console.log(imgURL)
     
@@ -50,7 +52,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Image source={require('./assets/pokeapi_256.png')} />
+      <Image style={styles.logo} source={require('./assets/pokeapi_256.png')} />
       <View style={styles.containerSwitch}>
         <Text>Desactivar Busqueda</Text>
         <Switch 
@@ -111,7 +113,8 @@ export default function App() {
       <Modal
         visible = {modalVisible}
         close = {handleClose}
-        url = {pokemonList.filter(item => item.name.includes(item)).map(x => x.url)}
+        url = {imgURL}
+        // como ya guardamos la URL en esta constante solo se lo asociamos a la prop url
         ></Modal>
       <StatusBar
       backgroundColor="#c90a1d"
@@ -121,8 +124,6 @@ export default function App() {
     </View>
   );
 }
-// console.log(pokemonList.map(x => x.url))
-// console.log(pokemonList.filter(item => item.name.includes('spearow')).map(x => x.url))
 
 const styles = StyleSheet.create({
   container: {
@@ -130,7 +131,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop:50
+  },
+  logo: {
+    marginTop: 10
   },
   list: {
     width: '100%',

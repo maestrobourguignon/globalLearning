@@ -13,7 +13,8 @@ export default ({title, imagen, open}) => {
       <Text style={styles.txt}>{title}</Text>
       </View>
       <View style={styles.btnContainer}>
-        <Button title="Ver Imagen" onPress={open}/>
+        <Button title="Ver Imagen" onPress={() => open(imagen)}/>
+        {/* para pasarle al modal el url, se le pasa la funcion flecha open(que se le dara el valor de handleOpen) y le pasamos pa prop imagen(que es el nombre que le dimos al url) */}
       </View>
     </View>
 
