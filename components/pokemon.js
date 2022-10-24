@@ -1,15 +1,17 @@
 import React from "react";
-import { Text, StyleSheet, View, Image, Button } from "react-native";
+import { Text, StyleSheet, View, Image, Button, TouchableOpacity } from "react-native";
 
 
-export default ({title, imagen, open}) => {
+export default ({title, imagen, open, imgView}) => {
   
   return (
     <View style={styles.container}>
       <View style={styles.pkmnContainer}>
-      <View style={styles.circulito}>
-        <Image style={styles.img} source={{uri: imagen}}/>
-      </View>
+      <TouchableOpacity onPress={() => imgView(imagen)}>
+        <View style={styles.circulito}>
+          <Image style={styles.img} source={{uri: imagen}}/>
+        </View>
+      </TouchableOpacity>
       <Text style={styles.txt}>{title}</Text>
       </View>
       <View style={styles.btnContainer}>

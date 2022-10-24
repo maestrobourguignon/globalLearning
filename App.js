@@ -15,6 +15,7 @@ import {
 import Pokemon from './components/pokemon';
 import pokemonList from './components/pokemonList';
 import Modal from './components/modal';
+import PokemonView from './components/pokemonView';
 
 
 
@@ -27,6 +28,7 @@ export default function App() {
   const [oculto, setOculto] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [imgURL, setImgURL] = useState('')
+  const [webView, setWebView] = useState(false)
   
   const asyncSearch = () => {
     setOculto()
@@ -40,15 +42,21 @@ export default function App() {
   // en el componente pokemon, y luego seteamos la const imgURL con el valor de la prop
   const handleOpen = (imagen) => {
     setImgURL(imagen)
-    setModalVisible(true)
-    console.log(imgURL)
-    
+    setModalVisible(true)    
   }
 
   const handleClose = () => {
     setModalVisible(false)
   }
 
+  const imgView = (imagen) => {
+    setImgURL(imagen)
+    setWebView (true)
+  }
+  const webClose = () => {
+    setWebView (false)
+  }
+// juan abris meet? no me estaria cargando la web view
 
   return (
     <View style={styles.container}>
@@ -78,6 +86,7 @@ export default function App() {
           imagen={item.url}
           title={item.name}
           open={handleOpen}
+          imgView={imgView}
         />}
         ListEmptyComponent={
           <View style={styles.listaVacia}>
@@ -116,10 +125,15 @@ export default function App() {
         url = {imgURL}
         // como ya guardamos la URL en esta constante solo se lo asociamos a la prop url
         ></Modal>
+        <PokemonView 
+        visible = {webView}
+        close = {webClose}
+        imagen = {imgURL}
+        
+        />      
       <StatusBar
       backgroundColor="#c90a1d"
       barStyle={'light-content'}
-
       />
     </View>
   );
