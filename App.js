@@ -11,6 +11,11 @@ import {
   StatusBar, 
   Switch,
   RefreshControl,
+  Animated,
+  Easing,
+  Vibration,
+  Touchable,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Pokemon from './components/pokemon';
 import pokemonList from './components/pokemonList';
@@ -41,6 +46,7 @@ export default function App() {
   // a handleOpen le pasamos la prop de imagen que contiene el url que le dimos con la misma prop 
   // en el componente pokemon, y luego seteamos la const imgURL con el valor de la prop
   const handleOpen = (imagen) => {
+    Vibration.vibrate()
     setImgURL(imagen)
     setModalVisible(true)    
   }
@@ -50,17 +56,44 @@ export default function App() {
   }
 
   const imgView = (imagen) => {
+    Vibration.vibrate()
     setImgURL(imagen)
     setWebView (true)
   }
   const webClose = () => {
     setWebView (false)
   }
-// juan abris meet? no me estaria cargando la web view
+
+  const animatedValue = React.useRef(new Animated.Value(0)).current;
+ 
+  const timingAnimation = (easing) => {
+    animatedValue.setValue(-400);
+    Animated.timing(animatedValue, {
+      toValue: 0,
+      duration: 900,
+      useNativeDriver: true,
+      easing
+    }).start()
+  }
+  const animatedStyleTiming = {
+    transform: [{ translateX: animatedValue}],
+  }
+
 
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} source={require('./assets/pokeapi_256.png')} />
+      <TouchableWithoutFeedback
+        easing='Elastic'
+        onPress={() => timingAnimation(Easing.elastic(2))}
+      >
+      <Animated.View
+        style={[styles.logo, animatedStyleTiming]} 
+        source={require('./assets/pokeapi_256.png')} 
+      >
+        <Image source={require('./assets/pokeapi_256.png')} />
+      </Animated.View>
+      </TouchableWithoutFeedback>
+      
       <View style={styles.containerSwitch}>
         <Text>Desactivar Busqueda</Text>
         <Switch 

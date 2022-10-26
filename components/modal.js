@@ -1,11 +1,12 @@
 import React, {useCallback} from "react";
-import { Button, Modal, View, StyleSheet, Text, Alert, Linking } from "react-native";
+import { Button, Modal, View, StyleSheet, Text, Alert, Linking, Vibration } from "react-native";
 
 
 
 export default ({visible, close, url}) => {
   
   const handlePress = useCallback(async () => {
+    Vibration.vibrate()
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
